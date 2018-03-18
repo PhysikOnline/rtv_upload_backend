@@ -22,7 +22,7 @@ class UploadController extends Controller
     public function upload(Request $request)
     {
         $uploader = new \RTV\Upload\Uploader();
-        //$uploader->process();
+        $uploader->process();
         $parser = new \RTV\Upload\VideoConfigParser();
 
         $parser->read();

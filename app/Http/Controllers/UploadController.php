@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use RTV\Upload\VideoModel;
 
 require_once __DIR__ . '/../../uploader.php';
 require_once __DIR__ . '/../../video_config_parser.php';
@@ -21,18 +22,25 @@ class UploadController extends Controller
 
     public function upload(Request $request)
     {
+        $video = new VideoModel();
+        $video->title = $request->input('title');
+        $video->abstract = $request->input('abstract');
+        $video->description = $request->input('description');
+        $video->image = $request->input('image');
+        $video->content = $request->input('content');
+        $video->publish_date = $request->input('publish_date');
+        $video->taxonomy = $request->input('taxonomy');
+
+        $category = $request->input('category');
+
         $uploader = new \RTV\Upload\Uploader();
-        $uploader->process();
         $parser = new \RTV\Upload\VideoConfigParser();
 
-        $parser->read();
+        $uploader->process();
 
-        $video = new \RTV\Upload\VideoModel();
-        $video->title = 'Test';
-        $parser->addVideo("Kategorie 1", $video);
+        $parser->addVideo($category, $video);
+
         $parser->write();
-
-        print_r($parser->config);
         echo $uploader->isUploadComplete();
     }
 }

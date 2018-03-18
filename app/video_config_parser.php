@@ -8,8 +8,10 @@ require_once __DIR__ . '/video_config.php';
 
 class VideoConfigParser
 {
-    private $configFile;
     public $config;
+    private $configFile;
+    private $categories;
+
     public function __construct()
     {
         $this->configFile = env('VIDEO_CONFIG_FILE', null);
@@ -22,29 +24,30 @@ class VideoConfigParser
         if (!is_writable($this->configFile)) {
             throw new \Exception('Path to video config file is not writable!');
         }
-
+        $this->read();
+        print_r($this->config);
     }
 
-    public function read()
+    private function read()
     {
         $this->config = Yaml::parseFile($this->configFile);
+        $this->categories = $this->config['videos'];
     }
 
     public function write()
     {
-        $yaml = Yaml::dump($this->config);
+        $config = $this->config;
+        $config['videos'] = $this->categories;
+        $yaml = Yaml::dump($config);
 
         file_put_contents($this->configFile, $yaml);
     }
 
     public function addVideo(String $category, VideoModel $video)
     {
-        $categories = $this->config['videos'];
-        foreach ($categories as $key => $category_object) {
+        foreach ($this->categories as $key => $category_object) {
             if ($category_object['title'] === $category) {
-                array_push($category_object['items'], $this->convertVideoToArray($video));
-                $categories[$key] = $category_object['items'];
-                $this->config['videos'] = $categories;
+                $this->categories[$key]['items'] = array_merge($category_object['items'], [$this->convertVideoToArray($video)]);
                 return;
             }
         }
@@ -53,14 +56,15 @@ class VideoConfigParser
 
     private function convertVideoToArray(VideoModel $video)
     {
-        $result = array();
-        $result['title'] = $video->title;
-        $result['abstract'] = $video->abstract;
-        $result['description'] = $video->description;
-        $result['image'] = $video->image;
-        $result['content'] = $video->content;
-        $result['publish_date'] = $video->publish_date;
-        $result['taxonomy'] = $video->taxonomy;
+        $result = array(
+            'title' => $video->title,
+            'abstract' => $video->abstract,
+            'description' => $video->description,
+            'image' => $video->image,
+            'content' => $video->content,
+            'publish_date' => $video->publish_date,
+            'taxonomy' => $video->taxonomy
+        );
         return $result;
     }
 }

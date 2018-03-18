@@ -4,5 +4,5 @@ published: true
 visible: true
 routable: false
 videos:
-    - { title: 'Kategorie 1', items: [{ title: Video1, abstract: 'Kurze Beschreibung (max. 200 Zeichen inkl. Leerzeichen)', description: 'Ausf黨rliche Beschreibung (max. 500 Zeichen inkl. Leerzeichen)', image: 'Pfad des Thumbnails', content: 'Pfad des Videos', publish_date: '01/01/2018 14:08', taxonomy: { tag: [tag1, tag2, ..., tagN] } }, { title: Video2 }, { title: test, abstract: null, description: Test, image: null, content: null, publish_date: null, taxonomy: null }] }
+    - { title: 'Kategorie 1', items: [{ title: Video1, abstract: 'Kurze Beschreibung (max. 200 Zeichen inkl. Leerzeichen)', description: 'Ausf黨rliche Beschreibung (max. 500 Zeichen inkl. Leerzeichen)', image: 'Pfad des Thumbnails', content: 'Pfad des Videos', publish_date: '01/01/2018 14:08', taxonomy: { tag: [tag1, tag2, ..., tagN] } }, { title: Video2 }, { title: test, abstract: null, description: Test, image: null, content: null, publish_date: null, taxonomy: null }, { title: test, abstract: null, description: Test, image: '', content: '', publish_date: '03/18/18 20:26', taxonomy: null }] }
     - { title: 'Kategorie 2', items: [{ title: Video3 }, { title: test, abstract: null, description: Test, image: null, content: null, publish_date: null, taxonomy: null }] }

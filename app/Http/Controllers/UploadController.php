@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use RTV\Upload\Uploader;
+use RTV\Upload\VideoConfigParser;
 use RTV\Upload\VideoModel;
 
 require_once __DIR__ . '/../../uploader.php';
@@ -26,21 +29,48 @@ class UploadController extends Controller
         $video->title = $request->input('title');
         $video->abstract = $request->input('abstract');
         $video->description = $request->input('description');
-        $video->image = $request->input('image');
-        $video->content = $request->input('content');
-        $video->publish_date = $request->input('publish_date');
+        $video->publish_date = date('m/d/Y H:i');
         $video->taxonomy = $request->input('taxonomy');
-
         $category = $request->input('category');
 
-        $uploader = new \RTV\Upload\Uploader();
-        $parser = new \RTV\Upload\VideoConfigParser();
+        if (!isset($video->title) || !isset($video->abstract) || !isset($video->description) || !isset($category)) {
+            return new Response('Missing parameters: title, abstract, category and description must be set!', 400);
+        }
+
+        $uploader = new Uploader();
+
+        $uploadRootDirectory = env('VIDEO_SRC_DIRECTORY', null);
+        if (!isset($uploadRootDirectory)) {
+            throw new \Exception('VIDEO_SRC_DIRECTORY not set!');
+        }
+
+        if (!file_exists($uploadRootDirectory)) {
+            mkdir($uploadRootDirectory);
+        }
+        $uploadCategoryDirectory = $uploadRootDirectory . '/' . str_replace(' ', '', $category);
+        if (!file_exists($uploadCategoryDirectory)) {
+            mkdir($uploadCategoryDirectory);
+        }
+        $uploadDirectoryName = date('Y_m_d_H_i') . '__' . str_replace(' ', '', $video->title);
+        $uploadDirectory = $uploadCategoryDirectory . '/' . $uploadDirectoryName;
+
+        $uploader->setUploadFolder($uploadDirectory);
+
 
         $uploader->process();
 
-        $parser->addVideo($category, $video);
+        if (!$uploader->isUploadComplete()) {
+            return new Response('Upload was not successful!', 500);
+        }
 
-        $parser->write();
-        echo $uploader->isUploadComplete();
+        $video->content = $uploadDirectory . '/' . $uploader->getOriginalFileName();
+        var_dump($video);
+
+        $parser = new VideoConfigParser();
+        // TODO: create image
+        // TODO: convert video
+//        $parser->addVideo($category, $video);
+
+//        $parser->write();
     }
 }

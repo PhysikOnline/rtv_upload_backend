@@ -25,7 +25,6 @@ class VideoConfigParser
             throw new \Exception('Path to video config file is not writable!');
         }
         $this->read();
-        print_r($this->config);
     }
 
     private function read()
@@ -51,7 +50,11 @@ class VideoConfigParser
                 return;
             }
         }
-        throw new \Exception("Could not find category " . $category . ".");
+        // if category does not exist
+        array_push($this->categories, array(
+            'title' => $category,
+            'items' => [$video]
+        ));
     }
 
     private function convertVideoToArray(VideoModel $video)

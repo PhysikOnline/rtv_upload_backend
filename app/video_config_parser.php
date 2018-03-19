@@ -10,7 +10,7 @@ class VideoConfigParser
 {
     public $config;
     private $configFile;
-    private $categories;
+    public $categories;
 
     public function __construct()
     {

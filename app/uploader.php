@@ -34,6 +34,11 @@ class Uploader
         return $this->resumable->setFilename($filename);
     }
 
+    public function getFileName()
+    {
+        return $this->resumable->getFilename();
+    }
+
     public function isUploadComplete()
     {
         return $this->resumable->isUploadComplete();

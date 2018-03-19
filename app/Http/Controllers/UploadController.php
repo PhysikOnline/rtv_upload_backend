@@ -34,9 +34,14 @@ class UploadController extends Controller
         $video->taxonomy = $request->input('taxonomy');
         $category = $request->input('category');
         $email = $request->input('email');
+        $thumbnailTime = $request->input('thumbnail');
 
-        if (!isset($video->title) || !isset($video->abstract) || !isset($video->description) || !isset($category)) {
-            return new Response('Missing parameters: title, abstract, category and description must be set!', 400);
+        if (!isset($video->title)
+            || !isset($video->abstract)
+            || !isset($video->description)
+            || !isset($category)
+            || !isset($thumbnailTime)) {
+            return new Response('Missing parameters: title, abstract, category, thumbnail and description must be set!', 400);
         }
 
         $uploader = new Uploader();
@@ -57,7 +62,8 @@ class UploadController extends Controller
         $uploadDirectory = $uploadCategoryDirectory . DIRECTORY_SEPARATOR . $uploadDirectoryName;
 
         $uploader->setUploadFolder($uploadDirectory);
-        $origVideoFileName = $uploader->getOriginalFileName(true) . '.orig.mp4';
+        $videoBasename = $uploader->getOriginalFileName(true);
+        $origVideoFileName = $videoBasename . '.orig.mp4';
         $uploader->setFileName($origVideoFileName);
 
         $uploader->process();
@@ -66,15 +72,37 @@ class UploadController extends Controller
             return new Response('Upload was not successful!', 500);
         }
 
-        $videoPath = $uploadDirectory . DIRECTORY_SEPARATOR . $origVideoFileName;
+        $videoPath = $uploadDirectory . DIRECTORY_SEPARATOR . $uploader->getFileName();
         $video->content = $videoPath;
-        var_dump($video);
 
         $parser = new VideoConfigParser();
-        // TODO: create image
-        // TODO: convert video
-//        $parser->addVideo($category, $video);
-
+        // create image
+        $pathToImage = $uploadDirectory . DIRECTORY_SEPARATOR . $videoBasename . '-thumb640.jpg';
+        // $this->createThumbnail($thumbnailTime, $videoPath, $uploadDirectory);
+        $video->image = $pathToImage;
+        // convert video
+        // $this->convertVideo($videoPath, $uploadDirectory, $email, $uploadDirectory . DIRECTORY_SEPARATOR . $videoBasename . '.log');
+        $parser->addVideo($category, $video);
+        print_r($parser->categories);
 //        $parser->write();
+    }
+
+    private function createThumbnail(String $thumbnailTime, String $pathToVideo, String $pathToDirectory)
+    {
+        $thumbnailTime = escapeshellarg($thumbnailTime);
+        $pathToVideo = escapeshellarg($pathToVideo);
+        $pathToDirectory = escapeshellarg($pathToDirectory);
+        $cmd = __DIR__ . "../../../scripts/thumbnail.sh $pathToVideo $pathToDirectory $thumbnailTime";
+        return shell_exec($cmd);
+    }
+
+    private function convertVideo(String $pathToVideo, String $directory, String $email, String $logFile)
+    {
+        $pathToVideo = escapeshellarg($pathToVideo);
+        $directory = escapeshellarg($directory);
+        $email = escapeshellarg($email);
+        $logFile = escapeshellarg($logFile);
+        $cmd = __DIR__ . "../../../scripts/convert.sh -f $pathToVideo -t $directory -m $email -l $logFile";
+        return shell_exec($cmd);
     }
 }

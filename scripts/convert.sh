@@ -11,7 +11,7 @@
 
 function show_usage
 {
-    echo "Usage: convert.sh -f INPUT_FILE [ -t TARGET_FILE ] [ -m USER_MAIL ] [ -l LOG_FILE ] [ -a LINK_TO_WEBSITE ]"
+    echo "Usage: convert.sh -f INPUT_FILE [ -t TARGET_DIR ] [ -m USER_MAIL ] [ -l LOG_FILE ] [ -a LINK_TO_WEBSITE ]"
     echo "If option -t is not used, files will be generated in current directory."
     echo "      --no-checks     Does no sanity checks before converting."
     echo "      --no-convert    Debug option, does not convert video."

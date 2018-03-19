@@ -33,6 +33,7 @@ class UploadController extends Controller
         $video->publish_date = date('m/d/Y H:i');
         $video->taxonomy = $request->input('taxonomy');
         $category = $request->input('category');
+        $email = $request->input('email');
 
         if (!isset($video->title) || !isset($video->abstract) || !isset($video->description) || !isset($category)) {
             return new Response('Missing parameters: title, abstract, category and description must be set!', 400);
@@ -56,7 +57,8 @@ class UploadController extends Controller
         $uploadDirectory = $uploadCategoryDirectory . DIRECTORY_SEPARATOR . $uploadDirectoryName;
 
         $uploader->setUploadFolder($uploadDirectory);
-
+        $origVideoFileName = $uploader->getOriginalFileName(true) . '.orig.mp4';
+        $uploader->setFileName($origVideoFileName);
 
         $uploader->process();
 
@@ -64,7 +66,7 @@ class UploadController extends Controller
             return new Response('Upload was not successful!', 500);
         }
 
-        $videoPath = $uploadDirectory . DIRECTORY_SEPARATOR . $uploader->getOriginalFileName();
+        $videoPath = $uploadDirectory . DIRECTORY_SEPARATOR . $origVideoFileName;
         $video->content = $videoPath;
         var_dump($video);
 

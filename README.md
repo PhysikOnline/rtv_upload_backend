@@ -13,7 +13,8 @@ It expects the following POST parameters (in addition to parameters provided by 
 title = 'video title',
 abstract = 'video abstract',
 description = 'video description',
-category = 'video category'
+category = 'video category',
+[email] = 'email to send mail on completion (optional)'
 ```
 
 ## Installation

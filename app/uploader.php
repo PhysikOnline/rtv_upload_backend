@@ -24,9 +24,14 @@ class Uploader
         $this->resumable->process();
     }
 
-    public function getOriginalFileName()
+    public function getOriginalFileName($withoutExtension = false)
     {
-        return $this->resumable->getOriginalFilename();
+        return $this->resumable->getOriginalFilename($withoutExtension);
+    }
+
+    public function setFileName(String $filename)
+    {
+        return $this->resumable->setFilename($filename);
     }
 
     public function isUploadComplete()

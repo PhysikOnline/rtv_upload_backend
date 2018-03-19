@@ -16,7 +16,7 @@ class VideoConfigParser
     {
         $this->configFile = env('VIDEO_CONFIG_FILE', null);
         if ($this->configFile === null) {
-            throw new \Exception('No Path to video config file provided!');
+            throw new \Exception('No Path to video config file (VIDEO_CONFIG_FILE) provided!');
         }
         if (!is_readable($this->configFile)) {
             throw new \Exception('Path to video config file is not readable!');

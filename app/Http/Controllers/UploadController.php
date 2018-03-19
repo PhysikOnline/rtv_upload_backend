@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Laravel\Lumen\Routing\Controller;
 use RTV\Upload\Uploader;
 use RTV\Upload\VideoConfigParser;
 use RTV\Upload\VideoModel;
@@ -47,12 +48,12 @@ class UploadController extends Controller
         if (!file_exists($uploadRootDirectory)) {
             mkdir($uploadRootDirectory);
         }
-        $uploadCategoryDirectory = $uploadRootDirectory . '/' . str_replace(' ', '', $category);
+        $uploadCategoryDirectory = $uploadRootDirectory . DIRECTORY_SEPARATOR . str_replace(' ', '', $category);
         if (!file_exists($uploadCategoryDirectory)) {
             mkdir($uploadCategoryDirectory);
         }
         $uploadDirectoryName = date('Y_m_d_H_i') . '__' . str_replace(' ', '', $video->title);
-        $uploadDirectory = $uploadCategoryDirectory . '/' . $uploadDirectoryName;
+        $uploadDirectory = $uploadCategoryDirectory . DIRECTORY_SEPARATOR . $uploadDirectoryName;
 
         $uploader->setUploadFolder($uploadDirectory);
 
@@ -63,7 +64,8 @@ class UploadController extends Controller
             return new Response('Upload was not successful!', 500);
         }
 
-        $video->content = $uploadDirectory . '/' . $uploader->getOriginalFileName();
+        $videoPath = $uploadDirectory . DIRECTORY_SEPARATOR . $uploader->getOriginalFileName();
+        $video->content = $videoPath;
         var_dump($video);
 
         $parser = new VideoConfigParser();

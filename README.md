@@ -14,12 +14,17 @@ title = 'video title',
 abstract = 'video abstract',
 description = 'video description',
 category = 'video category',
-[email] = 'email to send mail on completion (optional)'
+thumbnail = 'time stamp for thumbnail creation (hh:mm:ss)',
+[email] = 'email address to send mail to on completion (optional)'
 ```
 
 ## Installation
 
 Install dependencies via `composer install`, then point resumable.js to `public/index.php/upload`.
+
+For a resumable.js example see `test.html`.
+
+The video will be converted using `ffmpeg` which has to be installed on your system.
 
 ## Configuration
 

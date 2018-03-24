@@ -20,7 +20,7 @@ thumbnail = 'time stamp for thumbnail creation (hh:mm:ss)',
 
 ## Installation
 
-Install dependencies via `composer install`, then point resumable.js to `public/index.php/upload`.
+Install dependencies via `composer install`, then serve via `php -S localhost:8000 -t public`.
 
 For a resumable.js example see `test.html`.
 
